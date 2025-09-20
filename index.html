@@ -3,138 +3,134 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIP Video Earning App</title>
+  <title>VIP Video App</title>
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: #fff;
+      background-color: #000;
+      color: #ffd700;
+      text-align: center;
     }
     header {
-      background: #1f1f1f;
+      background: linear-gradient(90deg, #111, #333);
       padding: 15px;
-      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+      color: #ffd700;
+      box-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
       position: sticky;
       top: 0;
       z-index: 1000;
     }
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-      color: #ffd700;
-    }
     #searchBar {
-      margin-top: 10px;
+      margin: 20px;
       padding: 10px;
-      width: 90%;
-      border-radius: 8px;
-      border: none;
+      width: 80%;
       font-size: 16px;
+      border-radius: 8px;
+      border: 2px solid #ffd700;
+      background: #111;
+      color: #ffd700;
     }
     .video-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      padding: 20px;
       gap: 20px;
+      padding: 20px;
     }
     .video-card {
-      background: #1f1f1f;
+      width: 300px;
+      background: #111;
+      border: 2px solid #ffd700;
       border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
       overflow: hidden;
-      width: 320px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      transition: transform 0.2s;
+      transition: transform 0.3s;
     }
     .video-card:hover {
-      transform: scale(1.03);
+      transform: scale(1.05);
     }
     iframe {
       width: 100%;
       height: 180px;
       border: none;
     }
-    .content {
-      padding: 15px;
-      text-align: center;
-    }
-    .ad-btn {
-      display: block;
-      margin-top: 10px;
-      background: linear-gradient(45deg, #ffd700, #ff8c00);
-      color: #000;
-      text-decoration: none;
-      font-weight: bold;
+    .title {
       padding: 10px;
-      border-radius: 8px;
-      transition: 0.3s;
+      font-size: 16px;
+      font-weight: bold;
+      color: #ffd700;
     }
-    .ad-btn:hover {
-      background: linear-gradient(45deg, #ff8c00, #ffd700);
+    footer {
+      margin-top: 20px;
+      padding: 10px;
+      font-size: 14px;
+      background: #111;
+      border-top: 2px solid #ffd700;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>🔥 VIP Video Earning App 🔥</h1>
-    <input type="text" id="searchBar" placeholder="Search videos...">
-  </header>
+  <header>🎥 VIP Video Earning App 👑</header>
 
+  <!-- Search Bar -->
+  <input type="text" id="searchBar" onkeyup="searchVideo()" placeholder="🔍 Search for videos...">
+
+  <!-- Video Section -->
   <div class="video-container" id="videoList">
-    <!-- Video 1 -->
-    <div class="video-card" data-title="Motivational Speech">
-      <iframe src="https://www.youtube.com/embed/ZXsQAXx_ao0" allowfullscreen></iframe>
-      <div class="content">
-        <h3>Motivational Speech</h3>
-        <a href="https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc" 
-           target="_blank" class="ad-btn">💰 Watch More & Earn</a>
-      </div>
-    </div>
-
-    <!-- Video 2 -->
-    <div class="video-card" data-title="Relaxing Music">
-      <iframe src="https://www.youtube.com/embed/2OEL4P1Rz04" allowfullscreen></iframe>
-      <div class="content">
-        <h3>Relaxing Music</h3>
-        <a href="https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc" 
-           target="_blank" class="ad-btn">💰 Watch More & Earn</a>
-      </div>
-    </div>
-
-    <!-- Video 3 -->
-    <div class="video-card" data-title="Funny Video">
-      <iframe src="https://www.youtube.com/embed/tgbNymZ7vqY" allowfullscreen></iframe>
-      <div class="content">
-        <h3>Funny Video</h3>
-        <a href="https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc" 
-           target="_blank" class="ad-btn">💰 Watch More & Earn</a>
-      </div>
-    </div>
-
-    <!-- Video 4 -->
-    <div class="video-card" data-title="Technology Explained">
-      <iframe src="https://www.youtube.com/embed/YbJOTdZBX1g" allowfullscreen></iframe>
-      <div class="content">
-        <h3>Technology Explained</h3>
-        <a href="https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc" 
-           target="_blank" class="ad-btn">💰 Watch More & Earn</a>
-      </div>
-    </div>
+    <!-- Example Videos -->
   </div>
 
-  <script>
-    const searchBar = document.getElementById("searchBar");
-    const videoList = document.getElementById("videoList").children;
+  <!-- Adsterra Ad -->
+  <footer>
+    <p>💰 Enjoy videos & earn rewards!</p>
+    <script type="text/javascript" src="https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc"></script>
+  </footer>
 
-    searchBar.addEventListener("keyup", function() {
-      const term = searchBar.value.toLowerCase();
-      for (let video of videoList) {
-        let title = video.getAttribute("data-title").toLowerCase();
-        video.style.display = title.includes(term) ? "block" : "none";
-      }
+  <script>
+    // Sample unlimited video data
+    const videos = [
+      { title: "Sample Video 1", link: "https://www.youtube.com/embed/tgbNymZ7vqY" },
+      { title: "Sample Video 2", link: "https://www.youtube.com/embed/ScMzIvxBSi4" },
+      { title: "Sample Video 3", link: "https://www.youtube.com/embed/sBws8MSXN7A" },
+      { title: "Sample Video 4", link: "https://www.youtube.com/embed/ysz5S6PUM-U" },
+      { title: "Sample Video 5", link: "https://www.youtube.com/embed/aqz-KE-bpKQ" },
+      { title: "Sample Video 6", link: "https://www.youtube.com/embed/2Vv-BfVoq4g" },
+      { title: "Sample Video 7", link: "https://www.youtube.com/embed/eVTXPUF4Oz4" },
+      { title: "Sample Video 8", link: "https://www.youtube.com/embed/JGwWNGJdvx8" },
+      { title: "Sample Video 9", link: "https://www.youtube.com/embed/OPf0YbXqDm0" },
+      { title: "Sample Video 10", link: "https://www.youtube.com/embed/kJQP7kiw5Fk" }
+    ];
+
+    // Load videos dynamically
+    const videoList = document.getElementById("videoList");
+    videos.forEach(video => {
+      const card = document.createElement("div");
+      card.className = "video-card";
+      card.innerHTML = `
+        <iframe src="${video.link}" allowfullscreen></iframe>
+        <div class="title">${video.title}</div>
+      `;
+      videoList.appendChild(card);
     });
+
+    // Search Function
+    function searchVideo() {
+      let input = document.getElementById("searchBar").value.toLowerCase();
+      let cards = document.getElementsByClassName("video-card");
+
+      for (let i = 0; i < cards.length; i++) {
+        let title = cards[i].getElementsByClassName("title")[0].innerText.toLowerCase();
+        if (title.includes(input)) {
+          cards[i].style.display = "";
+        } else {
+          cards[i].style.display = "none";
+        }
+      }
+    }
   </script>
 
 </body>
