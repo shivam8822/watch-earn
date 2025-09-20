@@ -1,156 +1,236 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VIP Video App</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #000;
-      color: #ffd700;
-      text-align: center;
-    }
-    header {
-      background: linear-gradient(90deg, #111, #333);
-      padding: 15px;
-      font-size: 22px;
-      font-weight: bold;
-      color: #ffd700;
-      box-shadow: 0 2px 10px rgba(255, 215, 0, 0.5);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-    #searchBar {
-      margin: 20px;
-      padding: 10px;
-      width: 80%;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 2px solid #ffd700;
-      background: #111;
-      color: #ffd700;
-    }
-    .video-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 20px;
-      padding: 20px;
-    }
-    .video-card {
-      width: 300px;
-      background: #111;
-      border: 2px solid #ffd700;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
-      overflow: hidden;
-      transition: transform 0.3s;
-    }
-    .video-card:hover {
-      transform: scale(1.05);
-    }
-    iframe {
-      width: 100%;
-      height: 180px;
-      border: none;
-    }
-    .title {
-      padding: 10px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #ffd700;
-    }
-    footer {
-      margin-top: 20px;
-      padding: 10px;
-      font-size: 14px;
-      background: #111;
-      border-top: 2px solid #ffd700;
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VIP 10k Videos — Black & Gold</title>
+<style>
+  :root{--bg:#000;--card:#0b0b0b;--gold:#ffd700;--muted:#9aa;}
+  body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:var(--gold)}
+  header{position:sticky;top:0;background:linear-gradient(90deg,#070707,#111);padding:12px 16px;z-index:20}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#ffb84d);display:flex;align-items:center;justify-content:center;color:#000;font-weight:800}
+  .title{font-size:18px;font-weight:800}
+  .searchRow{margin-top:10px;display:flex;gap:8px;align-items:center}
+  input[type="search"]{flex:1;padding:10px;border-radius:10px;border:2px solid rgba(255,215,0,0.12);background:#070707;color:var(--gold);outline:none}
+  button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--gold),#ffb84d);color:#000;font-weight:700;cursor:pointer}
+
+  main{display:grid;grid-template-columns:1fr 360px;gap:14px;padding:16px;max-width:1200px;margin:0 auto}
+  .left{min-height:80vh}
+  .playerCard{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.04)}
+  #playerFrame{width:100%;height:420px;border:none;border-radius:8px;background:#000;display:block}
+  .meta{display:flex;justify-content:space-between;align-items:center;padding:10px 6px}
+  .grid{margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .card{background:var(--card);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);cursor:pointer;display:flex;flex-direction:column}
+  .thumbWrap{position:relative;height:125px;background:#111}
+  .thumb{width:100%;height:100%;object-fit:cover;display:block}
+  .playBtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.6);padding:8px 12px;border-radius:999px;border:2px solid rgba(255,215,0,0.9);color:var(--gold);font-weight:800}
+  .cbody{padding:10px;text-align:left;color:var(--gold);flex:1;display:flex;flex-direction:column;justify-content:space-between}
+  .ctitle{font-weight:700;font-size:14px;margin-bottom:6px}
+  .cmeta{font-size:12px;color:var(--muted)}
+  .adBlock{margin-top:12px;padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(255,215,0,0.06), rgba(255,215,0,0.02));text-align:center;border:1px solid rgba(255,215,0,0.04)}
+  .loadMore{display:block;margin:12px auto;padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--gold),#ffb84d);color:#000;font-weight:800;cursor:pointer}
+  aside.card{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04)}
+  .small{font-size:13px;color:var(--muted)}
+  @media (max-width:980px){
+    main{grid-template-columns:1fr;padding:12px}
+    #playerFrame{height:240px}
+  }
+</style>
 </head>
 <body>
+  <header>
+    <div class="brand">
+      <div class="logo">VIP</div>
+      <div>
+        <div class="title">VIP 10k Videos — Black & Gold</div>
+        <div class="small">Click thumbnail to load video • Offer button included</div>
+      </div>
+    </div>
+    <div class="searchRow" style="margin-top:10px">
+      <input id="searchInput" type="search" placeholder="Search videos by title..." />
+      <button id="scrollTopBtn">Top</button>
+    </div>
+  </header>
 
-  <header>🎥 VIP Video Earning App 👑</header>
+  <main>
+    <section class="left">
+      <div class="playerCard">
+        <iframe id="playerFrame" src="" allowfullscreen></iframe>
+        <div class="meta">
+          <div id="nowTitle" style="font-weight:800">Select a video to play</div>
+          <div class="small" id="nowExtra"></div>
+        </div>
+        <div class="adBlock">
+          <a id="adLink" href="https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc" target="_blank" style="text-decoration:none;padding:10px 12px;border-radius:8px;background:linear-gradient(90deg,#ffd700,#ffb84d);color:#000;font-weight:800;display:inline-block">🔥 Open Offer & Earn</a>
+          <div class="small" style="margin-top:8px;color:#cfcfcf">User action required — click to open offer.</div>
+        </div>
+      </div>
 
-  <!-- Search Bar -->
-  <input type="text" id="searchBar" onkeyup="searchVideo()" placeholder="🔍 Search for videos...">
+      <div id="videoGrid" class="grid" aria-live="polite"></div>
 
-  <!-- Video Section -->
-  <div class="video-container" id="videoList"></div>
+      <button id="loadMoreBtn" class="loadMore">Load more (auto loads while scrolling)</button>
+    </section>
 
-  <!-- Adsterra Ad -->
-  <footer>
-    <p>💰 Enjoy videos & earn rewards!</p>
-    <script type="text/javascript" src="https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc"></script>
-  </footer>
+    <aside>
+      <div class="card">
+        <div style="font-weight:800">Status</div>
+        <div class="small" id="status">Preparing 10,000 entries...</div>
+        <hr style="margin:10px 0;border-color:rgba(255,255,255,0.03)"/>
+        <div class="small">• Only thumbnails load initially. Click to load player (reduces memory).</div>
+        <div class="small">• Infinite scroll appends batches; search filters rendered cards.</div>
+        <div style="margin-top:10px" class="small">Entries: <strong id="totalCount">10000</strong></div>
+      </div>
+      <div style="height:12px"></div>
+      <div class="card small">
+        <strong>Notes</strong>
+        <ul>
+          <li>This demo cycles through a pool of real/popular YouTube IDs to create variety.</li>
+          <li>If you want your own channel/playlist videos, replace the `pool` array with your IDs.</li>
+          <li>Embedding 10k players at once will crash browsers — this uses lazy loading for safety.</li>
+        </ul>
+      </div>
+    </aside>
+  </main>
 
-  <script>
-    // 50 Demo YouTube videos
-    const videos = [];
-    for (let i = 1; i <= 50; i++) {
-      videos.push({
-        title: "Demo Video " + i,
-        link: "https://www.youtube.com/embed/tgbNymZ7vqY" // same demo link, change if needed
-      });
-    }
+<script>
+/* ===== CONFIG ===== */
+const TOTAL = 10000;       // number of entries to create
+const BATCH_RENDER = 40;   // how many cards to append per batch (on scroll)
+const POOL = [
+  "tgbNymZ7vqY","ScMzIvxBSi4","sBws8MSXN7A","ysz5S6PUM-U","aqz-KE-bpKQ",
+  "2Vv-BfVoq4g","eVTXPUF4Oz4","JGwWNGJdvx8","OPf0YbXqDm0","kJQP7kiw5Fk",
+  "dQw4w9WgXcQ","V-_O7nl0Ii0","hT_nvWreIhg","CevxZvSJLk8","kXYiU_JCYtU",
+  "YQHsXMglC9A","60ItHLz5WEA","fRh_vgS2dFE","bC1wK5ThF1U","LsoLEjrDogU"
+]; // pool of video IDs to cycle through
 
-    // Load videos dynamically
-    const videoList = document.getElementById("videoList");
-    videos.forEach(video => {
-      const card = document.createElement("div");
-      card.className = "video-card";
-      card.innerHTML = `
-        <iframe src="${video.link}" allowfullscreen></iframe>
-        <div class="title">${video.title}</div>
-      `;
-      videoList.appendChild(card);
+/* ===== state ===== */
+let entries = [];       // will hold metadata for 10k
+let rendered = 0;
+let isAppending = false;
+
+/* ===== DOM refs ===== */
+const videoGrid = document.getElementById('videoGrid');
+const playerFrame = document.getElementById('playerFrame');
+const nowTitle = document.getElementById('nowTitle');
+const statusEl = document.getElementById('status');
+const totalCountEl = document.getElementById('totalCount');
+const searchInput = document.getElementById('searchInput');
+const loadMoreBtn = document.getElementById('loadMoreBtn');
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+totalCountEl.innerText = TOTAL;
+
+/* ===== build entries metadata ===== */
+function buildEntries(){
+  for(let i=1;i<=TOTAL;i++){
+    const videoId = POOL[(i-1) % POOL.length]; // cycle
+    entries.push({
+      id: i,
+      title: `VIP Video #${i}`,
+      videoId,
+      thumb: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`
     });
+  }
+  statusEl.innerText = `Ready — ${entries.length} entries prepared. Rendering first batch...`;
+}
 
-    // Search Function
-    function searchVideo() {
-      let input = document.getElementById("searchBar").value.toLowerCase();
-      let cards = document.getElementsByClassName("video-card");
+/* ===== create card DOM but only thumbnail (no iframe) ===== */
+function createCardMeta(item){
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.dataset.title = item.title.toLowerCase();
+  el.dataset.videoId = item.videoId;
+  el.innerHTML = `
+    <div class="thumbWrap">
+      <img class="thumb" src="${item.thumb}" alt="${escapeHtml(item.title)}">
+      <div class="playBtn">PLAY</div>
+    </div>
+    <div class="cbody">
+      <div>
+        <div class="ctitle">${escapeHtml(item.title)}</div>
+        <div class="cmeta">ID: ${item.id}</div>
+      </div>
+    </div>
+  `;
+  // click on card: replace thumbnail with iframe player
+  el.querySelector('.thumbWrap').addEventListener('click', () => {
+    loadIframeForCard(el, item.videoId, item.title);
+  });
+  return el;
+}
 
-      for (let i = 0; i < cards.length; i++) {
-        let title = cards[i].getElementsByClassName("title")[0].innerText.toLowerCase();
-        if (title.includes(input)) {
-          cards[i].style.display = "";
-        } else {
-          cards[i].style.display = "none";
-        }
-      }
+/* ===== load iframe into a card (on demand) ===== */
+function loadIframeForCard(cardEl, videoId, title){
+  // if iframe already present, do nothing
+  if(cardEl.querySelector('iframe')) return;
+  const wrapper = document.createElement('div');
+  wrapper.style.width = '100%';
+  wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" style="width:100%;height:220px;border:0;border-radius:0"></iframe>`;
+  // replace thumbWrap with wrapper
+  const thumbWrap = cardEl.querySelector('.thumbWrap');
+  thumbWrap.parentNode.replaceChild(wrapper, thumbWrap);
+  // also set player top frame for main player
+  playerFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  nowTitle.innerText = title;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== render next batch ===== */
+function renderNextBatch(batchSize = BATCH_RENDER){
+  if(rendered >= entries.length) {
+    statusEl.innerText = `All ${entries.length} entries rendered.`;
+    return;
+  }
+  const end = Math.min(rendered + batchSize, entries.length);
+  const fragment = document.createDocumentFragment();
+  for(let i = rendered; i < end; i++){
+    fragment.appendChild(createCardMeta(entries[i]));
+  }
+  videoGrid.appendChild(fragment);
+  rendered = end;
+  statusEl.innerText = `Rendered ${rendered}/${entries.length} entries.`;
+}
+
+/* ===== infinite scroll observer ===== */
+function setupScrollAutoLoad(){
+  window.addEventListener('scroll', ()=> {
+    const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 1200;
+    if(nearBottom && !isAppending && rendered < entries.length){
+      isAppending = true;
+      setTimeout(()=> {
+        renderNextBatch(BATCH_RENDER);
+        isAppending = false;
+      }, 200);
     }
-  </script>
+  });
+}
 
-</body>
-</html>
-      card.className = "video-card";
-      card.innerHTML = `
-        <iframe src="${video.link}" allowfullscreen></iframe>
-        <div class="title">${video.title}</div>
-      `;
-      videoList.appendChild(card);
-    });
+/* ===== search filter on currently rendered cards ===== */
+searchInput.addEventListener('input', ()=>{
+  const q = searchInput.value.trim().toLowerCase();
+  Array.from(videoGrid.children).forEach(card => {
+    const t = card.dataset.title;
+    card.style.display = t.includes(q) ? '' : 'none';
+  });
+});
 
-    // Search Function
-    function searchVideo() {
-      let input = document.getElementById("searchBar").value.toLowerCase();
-      let cards = document.getElementsByClassName("video-card");
+/* ===== Load more button (manual) ===== */
+loadMoreBtn.addEventListener('click', ()=> renderNextBatch(BATCH_RENDER));
 
-      for (let i = 0; i < cards.length; i++) {
-        let title = cards[i].getElementsByClassName("title")[0].innerText.toLowerCase();
-        if (title.includes(input)) {
-          cards[i].style.display = "";
-        } else {
-          cards[i].style.display = "none";
-        }
-      }
-    }
-  </script>
+/* ===== scroll top ===== */
+scrollTopBtn.addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
 
+/* ===== util ===== */
+function escapeHtml(s){ return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ===== init ===== */
+(function init(){
+  buildEntries();
+  renderNextBatch(60); // initial
+  setupScrollAutoLoad();
+  statusEl.innerText = `Rendered ${rendered}/${entries.length}. Scroll down to load more.`;
+})();
+</script>
 </body>
 </html>
