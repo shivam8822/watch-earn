@@ -80,9 +80,7 @@
   <input type="text" id="searchBar" onkeyup="searchVideo()" placeholder="🔍 Search for videos...">
 
   <!-- Video Section -->
-  <div class="video-container" id="videoList">
-    <!-- Example Videos -->
-  </div>
+  <div class="video-container" id="videoList"></div>
 
   <!-- Adsterra Ad -->
   <footer>
@@ -91,24 +89,45 @@
   </footer>
 
   <script>
-    // Sample unlimited video data
-    const videos = [
-      { title: "Sample Video 1", link: "https://www.youtube.com/embed/tgbNymZ7vqY" },
-      { title: "Sample Video 2", link: "https://www.youtube.com/embed/ScMzIvxBSi4" },
-      { title: "Sample Video 3", link: "https://www.youtube.com/embed/sBws8MSXN7A" },
-      { title: "Sample Video 4", link: "https://www.youtube.com/embed/ysz5S6PUM-U" },
-      { title: "Sample Video 5", link: "https://www.youtube.com/embed/aqz-KE-bpKQ" },
-      { title: "Sample Video 6", link: "https://www.youtube.com/embed/2Vv-BfVoq4g" },
-      { title: "Sample Video 7", link: "https://www.youtube.com/embed/eVTXPUF4Oz4" },
-      { title: "Sample Video 8", link: "https://www.youtube.com/embed/JGwWNGJdvx8" },
-      { title: "Sample Video 9", link: "https://www.youtube.com/embed/OPf0YbXqDm0" },
-      { title: "Sample Video 10", link: "https://www.youtube.com/embed/kJQP7kiw5Fk" }
-    ];
+    // 50 Demo YouTube videos
+    const videos = [];
+    for (let i = 1; i <= 50; i++) {
+      videos.push({
+        title: "Demo Video " + i,
+        link: "https://www.youtube.com/embed/tgbNymZ7vqY" // same demo link, change if needed
+      });
+    }
 
     // Load videos dynamically
     const videoList = document.getElementById("videoList");
     videos.forEach(video => {
       const card = document.createElement("div");
+      card.className = "video-card";
+      card.innerHTML = `
+        <iframe src="${video.link}" allowfullscreen></iframe>
+        <div class="title">${video.title}</div>
+      `;
+      videoList.appendChild(card);
+    });
+
+    // Search Function
+    function searchVideo() {
+      let input = document.getElementById("searchBar").value.toLowerCase();
+      let cards = document.getElementsByClassName("video-card");
+
+      for (let i = 0; i < cards.length; i++) {
+        let title = cards[i].getElementsByClassName("title")[0].innerText.toLowerCase();
+        if (title.includes(input)) {
+          cards[i].style.display = "";
+        } else {
+          cards[i].style.display = "none";
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
       card.className = "video-card";
       card.innerHTML = `
         <iframe src="${video.link}" allowfullscreen></iframe>
