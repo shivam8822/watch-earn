@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Watch & Earn — Single Page (Adsterra)</title>
+<title>Watch & Earn — Music Videos + Adsterra</title>
 <style>
   :root{
     --bg:#0f1720; --card:#0b1220; --accent:#ffb84d; --muted:#9aa8b2; --glass:rgba(255,255,255,0.03);
@@ -17,15 +17,13 @@
   .topRow{display:flex;gap:14px;align-items:center;margin-top:10px;flex-wrap:wrap}
   .card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--glass);box-shadow:0 6px 18px rgba(3,6,12,0.6)}
   .balanceCard{flex:1;min-width:260px}
-  .controls{display:flex;gap:10px;align-items:center}
   .bigBtn{background:linear-gradient(90deg,var(--accent),#ff8a4d);color:#000;border:none;padding:12px 18px;border-radius:10px;font-weight:800;cursor:pointer}
   .muted{color:var(--muted);font-size:13px}
-  .center{display:flex;align-items:center;justify-content:center}
   main{display:grid;grid-template-columns:1fr 360px;gap:18px;margin-top:18px}
   @media (max-width:980px){ main{grid-template-columns:1fr} }
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:12px}
   .thumbCard{display:flex;flex-direction:column;gap:8px;cursor:pointer}
-  .thumb{height:120px;background:#071321;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden}
+  .thumb{height:140px;background:#071321;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);overflow:hidden}
   .thumb img{width:100%;height:100%;object-fit:cover}
   .metaSmall{font-size:13px;color:var(--muted)}
   .walletSmall{display:flex;flex-direction:column;gap:8px}
@@ -34,7 +32,6 @@
   .requests{max-height:260px;overflow:auto;margin-top:8px}
   .note{font-size:13px;color:var(--muted)}
   .footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
-  .inlineAd{margin-top:12px;text-align:center}
   .status{font-size:13px;color:var(--muted);margin-top:6px}
   .smallBtn{padding:8px 10px;border-radius:8px;border:1px solid var(--glass);background:transparent;color:inherit;cursor:pointer}
 </style>
@@ -44,8 +41,8 @@
     <header>
       <div class="logo">W&E</div>
       <div>
-        <h1>Watch & Earn — Demo (Adsterra links integrated)</h1>
-        <div class="muted">Click "Watch Ad" to open ad (opens new tab) & earn coins. Local demo only.</div>
+        <h1>Watch & Earn — Music Videos</h1>
+        <div class="muted">Click thumbnail → Ad opens + video starts</div>
       </div>
     </header>
 
@@ -63,31 +60,13 @@
             <div id="pointsDisplay" style="font-weight:700">0</div>
           </div>
         </div>
-
-        <div style="display:flex;gap:10px;margin-top:12px;align-items:center">
-          <button id="watchBtn" class="bigBtn">🎥 Watch Ad & Earn</button>
-          <button id="previewBtn" class="smallBtn">Preview Inline</button>
-          <div style="margin-left:auto" class="note">Per ad: <strong id="perAmt">₹0.50</strong></div>
-        </div>
-        <div class="status" id="statusText">Ready — click to watch an ad.</div>
-
-        <div class="inlineAd" id="inlineAd" style="display:none">
-          <!-- inline iframe will be injected here if allowed -->
-        </div>
       </div>
 
       <div class="card walletSmall" style="min-width:260px;max-width:360px">
         <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div style="font-weight:800">Wallet</div>
-            <div class="muted">Client-side demo (localStorage)</div>
-          </div>
-          <div style="text-align:right">
-            <div class="muted">Total</div>
-            <div id="totalDisplay" style="font-weight:800">₹0.00</div>
-          </div>
+          <div><div style="font-weight:800">Wallet</div><div class="muted">Client-side demo</div></div>
+          <div style="text-align:right"><div class="muted">Total</div><div id="totalDisplay" style="font-weight:800">₹0.00</div></div>
         </div>
-
         <div>
           <label>Withdraw Method</label>
           <select id="payMethod"><option>UPI</option><option>PayPal</option><option>Bank</option></select>
@@ -96,7 +75,7 @@
           <label>Amount (₹)</label>
           <input id="payAmount" type="number" min="1" />
           <button id="btnRequestWithdraw" class="bigBtn" style="margin-top:10px;background:#1f2937;color:var(--accent)">Request Withdraw</button>
-          <div class="muted" style="margin-top:10px">Requests (client-side)</div>
+          <div class="muted" style="margin-top:10px">Requests</div>
           <div class="requests" id="requestsList"></div>
         </div>
       </div>
@@ -104,31 +83,25 @@
 
     <main>
       <section>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div style="font-weight:800">Videos</div>
-          <div class="muted">Click thumbnail → ad opens & video preview loads</div>
-        </div>
-
-        <div class="grid" id="videoGrid" aria-live="polite"></div>
+        <div style="font-weight:800">Videos</div>
+        <div class="grid" id="videoGrid"></div>
         <div style="margin-top:12px;display:flex;justify-content:center">
           <button id="loadMore" class="smallBtn">Load more</button>
         </div>
       </section>
-
       <aside>
         <div class="card">
           <div style="font-weight:800">Activity</div>
-          <div class="muted" style="margin-top:8px">Recent credits & events</div>
+          <div class="muted" style="margin-top:8px">Recent credits</div>
           <div id="activityLog" style="margin-top:12px;max-height:320px;overflow:auto"></div>
         </div>
       </aside>
     </main>
-
-    <div class="footer">Demo only — to process real payouts integrate server-side verification & gateway. Use ad links legally per network TOS.</div>
+    <div class="footer">Demo only — integrate server-side for real payouts.</div>
   </div>
 
 <script>
-/* ====== CONFIG: place your Adsterra links here ====== */
+/* ====== CONFIG ====== */
 const ADS = [
   "https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc",
   "https://www.revenuecpmgate.com/bq64ih051?key=f87f655176f7b9e9ce85c2f1fc646ab8",
@@ -140,179 +113,118 @@ const ADS = [
   "https://www.revenuecpmgate.com/h1z8zgsqpa?key=0f2b818b6f9f23015095da1437b5097b"
 ];
 
-/* ====== Rewards config ====== */
-const REWARD_PER = 0.5;      // ₹0.50 per click (client-side demo)
-const POINTS_PER = 5;
-const COOLDOWN_MS = 5000;    // 5 seconds between credits
-const DAILY_LIMIT = 200;     // max credits per day (client-side)
+// convert full YouTube URLs or YouTube short URLs to just video IDs
+function extractYouTubeID(url){
+  // patterns to consider: youtu.be/ID, youtube.com/watch?v=ID
+  let id = null;
+  try {
+    const u = new URL(url);
+    if(u.hostname.includes("youtu.be")){
+      id = u.pathname.slice(1);  // after slash
+    } else if(u.hostname.includes("youtube.com")){
+      id = u.searchParams.get("v");
+    }
+  } catch(e){
+    // maybe passed direct ID
+    id = url;
+  }
+  return id;
+}
 
-/* ====== storage keys & state ====== */
-const KEY = "we_demo_wallet_v1";
-let state = {
-  balance:0, total:0, today:0, points:0,
-  lastClaimAt:0, dailyCount:0, requests:[], activity:[]
-};
+// Your music video list
+const MUSIC_VIDEOS = [
+  "https://youtu.be/Zq9pRK_-oiI?si=wFrthPVyi2q5ouu8",
+  "https://youtu.be/ZjpZCBMNMXE?si=Jk83iZ1clJr2VtLg",
+  "https://youtu.be/hhMEFaeBm1Y?si=tOAeIRdRrSkmJWbh",
+  "https://youtu.be/LSakRaD6-7s?si=3XZGMT_GLpqOQmOK",
+  "https://youtu.be/JiF9anzVqM4?si=nGeRFgqVlca8C3yV",
+  "https://youtu.be/wWP39L7DM8o?si=wdrwZOc-EpMv4e0M",
+  "https://youtu.be/Pr1OdTzZDpQ?si=VaBynwQ6gwiFGhb7",
+  "https://youtu.be/8of5w7RgcTc?si=aGiTjK5IgDMXiaaQ"
+];
 
-/* ====== UI refs ====== */
+// extract IDs
+const VIDEO_POOL = MUSIC_VIDEOS.map(u => extractYouTubeID(u)).filter(Boolean);
+
+// reward + points etc.
+const REWARD_PER = 0.5, POINTS_PER = 5;
+let state={balance:0,total:0,today:0,points:0,activity:[]};
+
+// UI refs
 const balanceDisplay = document.getElementById('balanceDisplay');
 const todayDisplay = document.getElementById('todayDisplay');
 const totalDisplay = document.getElementById('totalDisplay');
 const pointsDisplay = document.getElementById('pointsDisplay');
-const watchBtn = document.getElementById('watchBtn');
-const previewBtn = document.getElementById('previewBtn');
-const inlineAd = document.getElementById('inlineAd');
-const statusText = document.getElementById('statusText');
-const videoGrid = document.getElementById('videoGrid');
-const loadMoreBtn = document.getElementById('loadMore');
 const activityLog = document.getElementById('activityLog');
-const requestsList = document.getElementById('requestsList');
-const btnRequestWithdraw = document.getElementById('btnRequestWithdraw');
 
-/* ====== helpers ====== */
-function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-function load(){
-  try{
-    const raw = localStorage.getItem(KEY);
-    if(raw) state = JSON.parse(raw);
-  }catch(e){ console.warn(e); }
-  updateUI();
-}
 function fmt(x){ return "₹"+Number(x||0).toFixed(2); }
 function now(){ return new Date().toLocaleString(); }
-function pushActivity(text){ state.activity.unshift({t:now(), text}); if(state.activity.length>200) state.activity.pop(); renderActivity(); save(); }
-function canClaim(){
-  const t = Date.now();
-  if(state.dailyCount >= DAILY_LIMIT) return {ok:false, msg:'Daily limit reached'};
-  if(t - (state.lastClaimAt||0) < COOLDOWN_MS) return {ok:false, msg:'Please wait before next claim'};
-  return {ok:true};
+function pushActivity(text){
+  state.activity.unshift({t:now(),text});
+  if(state.activity.length>200) state.activity.pop();
+  renderActivity();
+}
+function renderActivity(){
+  activityLog.innerHTML = state.activity.length ?
+    state.activity.map(a=>`<div style="padding:6px;background:rgba(255,255,255,0.04);margin-bottom:6px;border-radius:6px"><div style="font-size:12px;color:var(--muted)">${a.t}</div><div>${a.text}</div></div>`).join('') :
+    `<div class="muted">No activity yet</div>`;
 }
 
-/* ====== credit logic (client-side demo) ====== */
-function creditAfterClick(){
-  const c = canClaim();
-  if(!c.ok){ statusText.innerText = c.msg; return false; }
-  state.balance += REWARD_PER;
-  state.total += REWARD_PER;
-  state.today += REWARD_PER;
-  state.points += POINTS_PER;
-  state.lastClaimAt = Date.now();
-  state.dailyCount = (state.dailyCount||0) + 1;
-  pushActivity(`+${fmt(REWARD_PER)} credited (points +${POINTS_PER})`);
-  updateUI();
-  save();
-  return true;
-}
-
-/* ====== UI update ====== */
 function updateUI(){
   balanceDisplay.innerText = fmt(state.balance);
   todayDisplay.innerText = fmt(state.today);
   totalDisplay.innerText = fmt(state.total);
   pointsDisplay.innerText = state.points;
-  renderRequests();
-  renderActivity();
-}
-function renderActivity(){
-  activityLog.innerHTML = state.activity.length ? state.activity.map(a=>`<div style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px"><div style="font-size:13px;color:var(--muted)">${a.t}</div><div style="margin-top:6px">${a.text}</div></div>`).join('') : '<div class="muted">No activity yet</div>';
-}
-function renderRequests(){
-  requestsList.innerHTML = state.requests.length ? state.requests.map(r=>`<div style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px"><div><strong>${r.method}</strong> • ${r.account} • ₹${r.amount}</div><div class="muted">Status: ${r.status} • ${new Date(r.at).toLocaleString()}</div></div>`).join('') : '<div class="muted">No withdraw requests</div>';
 }
 
-/* ====== Video grid (sample thumbnails) ====== */
-const SAMPLE_POOL = ["dQw4w9WgXcQ","3JZ_D3ELwOQ","kJQP7kiw5Fk","fRh_vgS2dFE","9bZkp7q19f0","uelHwf8o7_U","JGwWNGJdvx8","OPf0YbXqDm0","60ItHLz5WEA","K4TOrB7at0Y"];
+// Video grid logic
 let rendered = 0;
 function createCard(i){
-  const vid = SAMPLE_POOL[i % SAMPLE_POOL.length];
+  const vid = VIDEO_POOL[i % VIDEO_POOL.length];
   const el = document.createElement('div');
   el.className = 'thumbCard card';
-  el.innerHTML = `<div class="thumb"><img src="https://i.ytimg.com/vi/${vid}/hqdefault.jpg" alt="thumb"/></div><div style="display:flex;justify-content:space-between"><div>VIP Video #${i+1}</div><div class="metaSmall">ID:${i+1}</div></div>`;
+  el.innerHTML = `
+    <div class="thumb" id="thumb-${i}">
+      <img src="https://i.ytimg.com/vi/${vid}/hqdefault.jpg" alt="thumb"/>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      <div>Music #${i+1}</div>
+      <div class="metaSmall">ID:${vid}</div>
+    </div>
+  `;
   el.addEventListener('click', ()=>{
-    // 1) open ad in new tab (user-initiated click)
     const ad = ADS[Math.floor(Math.random()*ADS.length)];
-    try{
-      window.open(ad, "_blank", "noopener");
-    }catch(e){
-      console.warn('popup blocked', e);
-      statusText.innerText = 'Popup blocked — allow popups for this site';
-    }
-    // 2) optionally show inline iframe
-    inlineAd.style.display = 'block';
-    inlineAd.innerHTML = `<iframe src="${ad}" width="320" height="240" frameborder="0" scrolling="no" style="border-radius:8px;border:1px solid rgba(255,255,255,0.04)"></iframe>`;
-    // 3) credit locally (demo)
-    setTimeout(()=> creditAfterClick(), 700);
+    try { window.open(ad, "_blank","noopener"); } catch(e){}
+    const thumbDiv = el.querySelector(`#thumb-${i}`);
+    thumbDiv.innerHTML = `
+      <iframe width="100%" height="200"
+        src="https://www.youtube.com/embed/${vid}?autoplay=1"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen style="border-radius:8px"></iframe>
+    `;
+    // credit
+    state.balance += REWARD_PER;
+    state.total += REWARD_PER;
+    state.today += REWARD_PER;
+    state.points += POINTS_PER;
+    pushActivity(`+${fmt(REWARD_PER)} credited (points +${POINTS_PER})`);
+    updateUI();
   });
   return el;
 }
-function renderNext(batch=12){
-  const frag = document.createDocumentFragment();
+function renderNext(batch=4){
+  const grid = document.getElementById('videoGrid');
   for(let i=0;i<batch;i++){
-    frag.appendChild(createCard(rendered+i));
+    grid.appendChild(createCard(rendered+i));
   }
   rendered += batch;
-  videoGrid.appendChild(frag);
 }
 
-/* ====== watch button click (main CTA) ====== */
-watchBtn.addEventListener('click', ()=>{
-  const ad = ADS[Math.floor(Math.random()*ADS.length)];
-  try{
-    window.open(ad, "_blank", "noopener");
-  }catch(e){
-    statusText.innerText = 'Popup blocked — allow popups';
-  }
-  // credit immediately (demo). You could instead wait for return or verify server-side.
-  creditAfterClick();
-  // show inline iframe
-  inlineAd.style.display = 'block';
-  inlineAd.innerHTML = `<iframe src="${ad}" width="320" height="240" frameborder="0" scrolling="no" style="border-radius:8px;border:1px solid rgba(255,255,255,0.04)"></iframe>`;
-});
-
-/* preview inline ad (just opens an iframe from a random ad without credit) */
-previewBtn.addEventListener('click', ()=>{
-  const ad = ADS[Math.floor(Math.random()*ADS.length)];
-  inlineAd.style.display = 'block';
-  inlineAd.innerHTML = `<iframe src="${ad}" width="320" height="240" frameborder="0" scrolling="no" style="border-radius:8px;border:1px solid rgba(255,255,255,0.04)"></iframe>`;
-});
-
-/* ====== withdraw request (client-side) ====== */
-btnRequestWithdraw.addEventListener('click', ()=>{
-  const method = document.getElementById('payMethod').value;
-  const account = document.getElementById('payAccount').value.trim();
-  const amount = Number(document.getElementById('payAmount').value);
-  if(!account || !amount || amount <= 0){ alert('Enter valid account & amount'); return; }
-  if(amount > state.balance){ alert('Insufficient balance'); return; }
-  state.balance -= amount;
-  state.requests.unshift({method, account, amount: amount.toFixed(2), status:'Processing', at: Date.now()});
-  pushActivity(`Withdraw requested: ${method} • ${account} • ${fmt(amount)}`);
-  updateUI(); save();
-  alert('Withdraw request submitted (client-side demo).');
-});
-
-/* ====== storage & init ====== */
-(function init(){
-  // load or set
-  load();
-  // initial batch
-  renderNext(18);
-  // load more handler
-  loadMoreBtn.addEventListener('click', ()=> renderNext(18));
-  // show per-amt UI
-  document.getElementById('perAmt').innerText = fmt(REWARD_PER);
-  // daily reset: naive reset at midnight local — optional
-  try{
-    const last = localStorage.getItem(KEY+"_day");
-    const todayDay = new Date().toDateString();
-    if(last !== todayDay){
-      // reset daily counters
-      state.today = 0;
-      state.dailyCount = 0;
-      localStorage.setItem(KEY+"_day", todayDay);
-      save();
-    }
-  }catch(e){}
-  updateUI();
-})();
+// init
+document.getElementById('loadMore').addEventListener('click', ()=> renderNext(4));
+updateUI();
+renderNext(4);
 </script>
 </body>
 </html>
