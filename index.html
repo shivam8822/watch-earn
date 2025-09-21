@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>VIP 10k Videos — Black & Gold</title>
+<title>VIP 50k Videos + Wallet — Black & Gold</title>
 <style>
   :root{--bg:#000;--card:#0b0b0b;--gold:#ffd700;--muted:#9aa;}
   body{margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:var(--gold)}
@@ -15,7 +15,7 @@
   input[type="search"]{flex:1;padding:10px;border-radius:10px;border:2px solid rgba(255,215,0,0.12);background:#070707;color:var(--gold);outline:none}
   button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--gold),#ffb84d);color:#000;font-weight:700;cursor:pointer}
 
-  main{display:grid;grid-template-columns:1fr 360px;gap:14px;padding:16px;max-width:1200px;margin:0 auto}
+  main{display:grid;grid-template-columns:1fr 420px;gap:14px;padding:16px;max-width:1250px;margin:0 auto}
   .left{min-height:80vh}
   .playerCard{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:12px;padding:12px;border:1px solid rgba(255,255,255,0.04)}
   #playerFrame{width:100%;height:420px;border:none;border-radius:8px;background:#000;display:block}
@@ -32,6 +32,12 @@
   .loadMore{display:block;margin:12px auto;padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--gold),#ffb84d);color:#000;font-weight:800;cursor:pointer}
   aside.card{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04)}
   .small{font-size:13px;color:var(--muted)}
+  .walletRow{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:linear-gradient(90deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));margin-bottom:8px}
+  .big{font-size:20px;font-weight:800;color:#fff}
+  label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+  input,select,textarea{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:#070707;color:var(--gold);width:100%;box-sizing:border-box}
+  .btnGhost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--gold);padding:8px;border-radius:8px;cursor:pointer}
+  .pill{display:inline-block;padding:6px 8px;border-radius:999px;background:rgba(255,215,0,0.08);color:var(--gold);font-weight:700}
   @media (max-width:980px){
     main{grid-template-columns:1fr;padding:12px}
     #playerFrame{height:240px}
@@ -43,7 +49,7 @@
     <div class="brand">
       <div class="logo">VIP</div>
       <div>
-        <div class="title">VIP 10k Videos — Black & Gold</div>
+        <div class="title">VIP 50k Videos — Wallet Demo 👑</div>
         <div class="small">Click thumbnail to load video • Offer button included</div>
       </div>
     </div>
@@ -75,19 +81,19 @@
     <aside>
       <div class="card">
         <div style="font-weight:800">Status</div>
-        <div class="small" id="status">Preparing 10,000 entries...</div>
+        <div class="small" id="status">Preparing 50,000 entries...</div>
         <hr style="margin:10px 0;border-color:rgba(255,255,255,0.03)"/>
         <div class="small">• Only thumbnails load initially. Click to load player (reduces memory).</div>
         <div class="small">• Infinite scroll appends batches; search filters rendered cards.</div>
-        <div style="margin-top:10px" class="small">Entries: <strong id="totalCount">10000</strong></div>
+        <div style="margin-top:10px" class="small">Entries: <strong id="totalCount">50000</strong></div>
       </div>
       <div style="height:12px"></div>
       <div class="card small">
         <strong>Notes</strong>
         <ul>
-          <li>This demo cycles through a pool of real/popular YouTube IDs to create variety.</li>
-          <li>If you want your own channel/playlist videos, replace the `pool` array with your IDs.</li>
-          <li>Embedding 10k players at once will crash browsers — this uses lazy loading for safety.</li>
+          <li>This demo cycles through a pool of video IDs to create variety.</li>
+          <li>To use your own videos/playlist replace the pool array with your IDs or use YouTube API.</li>
+          <li>Wallet is simulated (localStorage). Real payouts need a backend & payment gateway.</li>
         </ul>
       </div>
     </aside>
@@ -95,20 +101,316 @@
 
 <script>
 /* ===== CONFIG ===== */
-const TOTAL = 10000;       // number of entries to create
-const BATCH_RENDER = 40;   // how many cards to append per batch (on scroll)
+const TOTAL = 50000;       // number of generated entries
+const BATCH_RENDER = 50;   // how many cards to append per batch on scroll
 const POOL = [
   "tgbNymZ7vqY","ScMzIvxBSi4","sBws8MSXN7A","ysz5S6PUM-U","aqz-KE-bpKQ",
   "2Vv-BfVoq4g","eVTXPUF4Oz4","JGwWNGJdvx8","OPf0YbXqDm0","kJQP7kiw5Fk",
   "dQw4w9WgXcQ","V-_O7nl0Ii0","hT_nvWreIhg","CevxZvSJLk8","kXYiU_JCYtU",
   "YQHsXMglC9A","60ItHLz5WEA","fRh_vgS2dFE","bC1wK5ThF1U","LsoLEjrDogU"
-]; // pool of video IDs to cycle through
+]; // pool of video IDs
 
-/* ===== state ===== */
-let entries = [];       // will hold metadata for 10k
+const AD_LINK = "https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc";
+
+/* Wallet config (demo values) */
+const DAILY_LIMIT = 10;       // max claims per day
+const COOLDOWN = 10;         // seconds between claims
+const CREDIT_PER_CLAIM = 1.00; // rupees per claim
+const POINTS_PER_CLAIM = 10;  // points per claim
+
+/* Local storage key */
+const STORAGE_KEY = "vip_50k_wallet_v1";
+
+/* ===== STATE (minimal) ===== */
 let rendered = 0;
 let isAppending = false;
+let clickedSet = new Set(); // track clicked item ids (persisted)
+let wallet = {
+  balance: 0,
+  totalEarned: 0,
+  todayEarned: 0,
+  points: 0,
+  dailyCount: 0,
+  lastClaimAt: 0,
+  requests: []
+};
 
+/* ===== DOM refs ===== */
+const videoGrid = document.getElementById('videoGrid');
+const playerFrame = document.getElementById('playerFrame');
+const nowTitle = document.getElementById('nowTitle');
+const statusEl = document.getElementById('status');
+const totalCountEl = document.getElementById('totalCount');
+const searchInput = document.getElementById('searchInput');
+const loadMoreBtn = document.getElementById('loadMoreBtn');
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+const todayDisplay = document.getElementById('todayDisplay');
+const totalDisplay = document.getElementById('totalDisplay');
+const balanceDisplay = document.getElementById('balanceDisplay');
+const pointsDisplay = document.getElementById('pointsDisplay');
+const claimBtn = document.getElementById('claimBtn');
+const quickEarnBtn = document.getElementById('quickEarn');
+const dailyLimitLabel = document.getElementById('dailyLimit');
+const cooldownLabel = document.getElementById('cooldownSec');
+
+const payMethod = document.getElementById('payMethod');
+const payAccount = document.getElementById('payAccount');
+const payAmount = document.getElementById('payAmount');
+const btnRequestWithdraw = document.getElementById('btnRequestWithdraw');
+const requestsList = document.getElementById('requestsList');
+
+totalCountEl && (totalCountEl.innerText = TOTAL);
+dailyLimitLabel && (dailyLimitLabel.innerText = DAILY_LIMIT);
+cooldownLabel && (cooldownLabel.innerText = COOLDOWN);
+
+/* ===== Storage helpers ===== */
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) {
+      const obj = JSON.parse(raw);
+      wallet = obj.wallet || wallet;
+      const arr = obj.clicked || [];
+      clickedSet = new Set(arr);
+    }
+  }catch(e){ console.warn("load err", e); }
+}
+function saveState(){
+  try{
+    const obj = { wallet, clicked: Array.from(clickedSet) };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+  }catch(e){ console.warn("save err", e); }
+}
+
+/* ===== utility ===== */
+function escapeHtml(s){ return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ===== create card DOM on-the-fly (no big array) ===== */
+function createCardForIndex(i){
+  const idx = i; // 1-based index
+  const poolIndex = (idx - 1) % POOL.length;
+  const videoId = POOL[poolIndex];
+  const title = `VIP Video #${idx}`;
+  const thumb = `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.dataset.title = title.toLowerCase();
+  el.dataset.id = idx;
+  el.dataset.videoId = videoId;
+  el.innerHTML = `
+    <div class="thumbWrap">
+      <img class="thumb" src="${thumb}" alt="${escapeHtml(title)}">
+      <div class="playBtn">PLAY</div>
+    </div>
+    <div class="cbody">
+      <div>
+        <div class="ctitle">${escapeHtml(title)}</div>
+        <div class="cmeta">ID: ${idx}</div>
+      </div>
+    </div>
+  `;
+  // click handler: mark clicked and load iframe for this card
+  el.querySelector('.thumbWrap').addEventListener('click', () => {
+    clickedSet.add(idx);
+    saveState();
+    loadIframeForCard(el, videoId, title, idx);
+  });
+  return el;
+}
+
+/* ===== load iframe on-demand ===== */
+function loadIframeForCard(cardEl, videoId, title, idx){
+  if(cardEl.querySelector('iframe')) return;
+  const wrapper = document.createElement('div');
+  wrapper.style.width = '100%';
+  wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" style="width:100%;height:220px;border:0;border-radius:0"></iframe>`;
+  const thumbWrap = cardEl.querySelector('.thumbWrap');
+  thumbWrap.parentNode.replaceChild(wrapper, thumbWrap);
+  playerFrame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  nowTitle.innerText = title;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ===== render next batch indexes ===== */
+function renderNextBatch(batchSize = BATCH_RENDER){
+  if(rendered >= TOTAL){
+    statusEl.innerText = `Rendered ${rendered}/${TOTAL} entries.`;
+    return;
+  }
+  const fragment = document.createDocumentFragment();
+  const end = Math.min(rendered + batchSize, TOTAL);
+  for(let i = rendered + 1; i <= end; i++){
+    fragment.appendChild(createCardForIndex(i));
+  }
+  videoGrid.appendChild(fragment);
+  rendered = end;
+  statusEl.innerText = `Rendered ${rendered}/${TOTAL} entries. Scroll to load more.`;
+}
+
+/* ===== infinite scroll auto-load ===== */
+function setupScrollAutoLoad(){
+  window.addEventListener('scroll', ()=> {
+    const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 1200;
+    if(nearBottom && !isAppending && rendered < TOTAL){
+      isAppending = true;
+      setTimeout(()=> {
+        renderNextBatch(BATCH_RENDER);
+        isAppending = false;
+      }, 120);
+    }
+  });
+}
+
+/* ===== search on currently rendered cards ===== */
+searchInput.addEventListener('input', ()=>{
+  const q = searchInput.value.trim().toLowerCase();
+  Array.from(videoGrid.children).forEach(card => {
+    const t = card.dataset.title;
+    card.style.display = t.includes(q) ? '' : 'none';
+  });
+});
+
+/* ===== wallet UI ===== */
+function updateWalletUI(){
+  const td = document.getElementById('todayDisplay');
+  const tl = document.getElementById('totalDisplay');
+  const bc = document.getElementById('balanceDisplay');
+  const pts = document.getElementById('pointsDisplay');
+  if(td) td.innerText = `₹${wallet.todayEarned.toFixed(2)}`;
+  if(tl) tl.innerText = `₹${wallet.totalEarned.toFixed(2)}`;
+  if(bc) bc.innerText = `₹${wallet.balance.toFixed(2)}`;
+  if(pts) pts.innerText = `${wallet.points}`;
+  renderRequests();
+}
+
+/* ===== daily reset simple ===== */
+function checkDailyReset(){
+  const lastMidKey = 'vip_demo_last_mid_50k';
+  const todayKey = new Date().toDateString();
+  const last = localStorage.getItem(lastMidKey);
+  if(last !== todayKey){
+    wallet.todayEarned = 0;
+    wallet.dailyCount = 0;
+    localStorage.setItem(lastMidKey, todayKey);
+    saveState();
+  }
+}
+
+/* ===== claim logic (offer button) ===== */
+function anyRecentClickRendered(){
+  // check if any rendered card id is in clickedSet
+  for(let i=1;i<=rendered;i++){
+    if(clickedSet.has(i)) return true;
+  }
+  return false;
+}
+
+function canClaim(){
+  const now = Date.now();
+  checkDailyReset();
+  if(wallet.dailyCount >= DAILY_LIMIT) return {ok:false,msg:"Daily limit reached."};
+  if(now - wallet.lastClaimAt < COOLDOWN*1000){
+    const secLeft = Math.ceil((COOLDOWN*1000 - (now - wallet.lastClaimAt))/1000);
+    return {ok:false,msg:`Cooldown: ${secLeft}s left`};
+  }
+  if(!anyRecentClickRendered()) return {ok:false,msg:"Please play at least one video before claiming."};
+  return {ok:true};
+}
+
+document.getElementById('adLink').addEventListener('click', (e)=>{
+  // user-initiated open - we will credit after a short delay if conditions met
+  // open happens naturally by the link; we also try credit after timeout
+  setTimeout(()=> tryCreditAfterOffer(), 700);
+});
+
+document.getElementById('claimBtn') && document.getElementById('claimBtn').addEventListener('click', ()=>{
+  // support if claimBtn exists
+  setTimeout(()=> tryCreditAfterOffer(), 700);
+});
+
+document.getElementById('quickEarn') && document.getElementById('quickEarn').addEventListener('click', ()=>{
+  const c = canClaim();
+  if(!c.ok){ alert(c.msg); return; }
+  applyCredit(CREDIT_PER_CLAIM * 0.5, Math.floor(POINTS_PER_CLAIM/2));
+  alert(`Quick credit applied: ₹${(CREDIT_PER_CLAIM*0.5).toFixed(2)}`);
+});
+
+function tryCreditAfterOffer(){
+  const c = canClaim();
+  if(!c.ok){ alert(c.msg); return; }
+  applyCredit(CREDIT_PER_CLAIM, POINTS_PER_CLAIM);
+  wallet.dailyCount++;
+  wallet.lastClaimAt = Date.now();
+  saveState();
+  updateWalletUI();
+  alert(`Congrats! ₹${CREDIT_PER_CLAIM.toFixed(2)} added to wallet (demo).`);
+}
+
+function applyCredit(amount, pts){
+  wallet.balance += amount;
+  wallet.totalEarned += amount;
+  wallet.todayEarned += amount;
+  wallet.points += pts;
+  saveState();
+}
+
+/* ===== withdraw requests (simulated) ===== */
+function renderRequests(){
+  const el = document.getElementById('requestsList');
+  if(!el) return;
+  if(!wallet.requests || wallet.requests.length===0){
+    el.innerHTML = "<div class='small'>No requests yet.</div>";
+    return;
+  }
+  el.innerHTML = wallet.requests.map(r=>`<div style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px">
+    <div><strong>${r.method}</strong> — ${r.account} — ₹${r.amount}</div>
+    <div class="small">Status: ${r.status} • ${new Date(r.at).toLocaleString()}</div>
+  </div>`).join('');
+}
+
+document.getElementById('btnRequestWithdraw') && document.getElementById('btnRequestWithdraw').addEventListener('click', ()=>{
+  const method = payMethod.value.trim();
+  const account = payAccount.value.trim();
+  const amount = Number(payAmount.value);
+  if(!account || !amount || amount <= 0){ alert("Fill valid account and amount"); return; }
+  if(amount > wallet.balance){ alert("Insufficient balance"); return; }
+  const req = { method, account, amount: amount.toFixed(2), status: "Pending", at: Date.now() };
+  wallet.requests.unshift(req);
+  wallet.balance -= amount;
+  wallet.totalEarned -= amount;
+  saveState();
+  updateWalletUI();
+  alert("Withdraw request submitted (simulated).");
+});
+
+/* ===== init ===== */
+(function init(){
+  loadState();
+  checkDailyReset();
+  updateWalletUI();
+  // initial render
+  renderNextBatch(80);
+  setupScrollAutoLoad();
+  statusEl.innerText = `Rendered ${rendered}/${TOTAL} entries. Scroll to load more.`;
+  // handlers
+  loadMoreBtn.addEventListener('click', ()=> renderNextBatch(BATCH_RENDER));
+  scrollTopBtn.addEventListener('click', ()=> window.scrollTo({top:0,behavior:'smooth'}));
+  searchInput.addEventListener('input', ()=> {
+    const q = searchInput.value.trim().toLowerCase();
+    Array.from(videoGrid.children).forEach(card => {
+      const t = card.dataset.title;
+      card.style.display = t.includes(q) ? '' : 'none';
+    });
+  });
+  document.addEventListener('visibilitychange', ()=> {
+    if(document.visibilityState === 'visible'){ loadState(); updateWalletUI(); }
+  });
+})();
+</script>
+</body>
+</html>
 /* ===== DOM refs ===== */
 const videoGrid = document.getElementById('videoGrid');
 const playerFrame = document.getElementById('playerFrame');
