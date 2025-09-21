@@ -1,114 +1,308 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <title>Video App with Wallet</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #000;
-      color: #fff;
-    }
-    #video-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      padding: 20px;
-    }
-    iframe {
-      width: 300px;
-      height: 170px;
-      border-radius: 10px;
-      border: none;
-    }
-    /* Wallet fixed */
-    #wallet {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #111;
-      color: #fff;
-      padding: 10px 15px;
-      border-radius: 8px;
-      z-index: 999;
-      font-weight: bold;
-    }
-    /* Withdraw button fixed */
-    #withdraw-btn {
-      position: fixed;
-      bottom: 20px;
-      right: 10px;
-      z-index: 999;
-      padding: 10px 15px;
-      background: #f90;
-      color: #000;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VIP 100k Videos + Wallet</title>
+<style>
+  :root{--bg:#000;--card:#0b0b0b;--gold:#ffd700;--muted:#9aa;}
+  body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--gold)}
+  header{position:sticky;top:0;background:#111;padding:12px 16px;z-index:60;box-shadow:0 2px 8px rgba(0,0,0,0.6);display:flex;align-items:center;gap:12px}
+  .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#ffb84d);display:flex;align-items:center;justify-content:center;color:#000;font-weight:800}
+  .title{font-weight:800;font-size:18px}
+  .searchRow{margin-left:auto;display:flex;gap:8px;align-items:center}
+  input[type="search"]{padding:8px 12px;border-radius:8px;border:1px solid rgba(255,215,0,0.08);background:#070707;color:var(--gold)}
+  button{padding:8px 12px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--gold),#ffb84d);color:#000;font-weight:700;cursor:pointer}
+
+  main{display:grid;grid-template-columns:1fr 380px;gap:14px;padding:16px;max-width:1250px;margin:0 auto}
+  .playerCard{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,0.04)}
+  #playerFrame{width:100%;height:380px;border-radius:8px;border:0;background:#000}
+  .meta{display:flex;justify-content:space-between;align-items:center;padding:8px}
+  .grid{margin-top:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+  .card{background:var(--card);border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);cursor:pointer;display:flex;flex-direction:column}
+  .thumbWrap{position:relative;height:125px;background:#111}
+  .thumb{width:100%;height:100%;object-fit:cover}
+  .playBtn{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.6);padding:6px 10px;border-radius:999px;border:2px solid rgba(255,215,0,0.9);color:var(--gold);font-weight:800}
+  .cbody{padding:10px;color:var(--gold);display:flex;flex-direction:column;justify-content:space-between;height:72px}
+  .ctitle{font-weight:700;font-size:13px;margin-bottom:6px}
+  .small{font-size:13px;color:var(--muted)}
+  .loadMore{display:block;margin:12px auto;padding:10px 14px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--gold),#ffb84d);color:#000;font-weight:800;cursor:pointer}
+  aside.card{padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04)}
+  .wallet-fixed{position:fixed;top:12px;right:12px;z-index:999;background:#0b0b0b;padding:10px;border-radius:10px;border:1px solid rgba(255,215,0,0.08);min-width:160px}
+  .withdraw-fixed{position:fixed;bottom:18px;right:12px;z-index:999}
+  #inlineAdContainer{margin-top:10px;text-align:center}
+  @media (max-width:980px){
+    main{grid-template-columns:1fr;padding:12px}
+    #playerFrame{height:220px}
+    .wallet-fixed{position:static;margin:10px auto;display:flex;justify-content:space-between;max-width:360px}
+    .withdraw-fixed{position:static;margin:10px auto;text-align:center}
+  }
+</style>
 </head>
 <body>
 
-  <!-- Wallet -->
-  <div id="wallet">💰 Balance: ₹<span id="balance">0.00</span></div>
-
-  <!-- Withdraw Button -->
-  <button id="withdraw-btn" onclick="withdraw()">Withdraw</button>
-
-  <!-- Video Container -->
-  <div id="video-container"></div>
-
-  <!-- Adsterra Ad Code (replace with your ad code) -->
-  <div id="ad-container" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:20px; border-radius:8px; z-index:1000;">
-    <p style="color:#000; font-weight:bold;">Advertisement</p>
-    <script type="text/javascript">
-      atOptions = {
-        'key' : 'your-adsterra-key',
-        'format' : 'iframe',
-        'height' : 250,
-        'width' : 300,
-        'params' : {}
-      };
-    </script>
-    <script type="text/javascript" src="//www.topcreativeformat.com/your-adsterra-script.js"></script>
+<header>
+  <div class="logo">VIP</div>
+  <div class="title">VIP 100k Videos</div>
+  <div class="searchRow">
+    <input id="searchInput" type="search" placeholder="Search videos..." />
+    <button id="refreshBtn">Refresh</button>
   </div>
+</header>
 
-  <script>
-    let balance = 0;
+<!-- Fixed wallet (hamesha dikhega) -->
+<div class="wallet-fixed" id="walletBox" aria-live="polite">
+  <div style="font-weight:800">Balance</div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+    <div class="small">Available</div>
+    <div id="balanceDisplay" style="font-weight:800;font-size:18px">₹0.00</div>
+  </div>
+</div>
 
-    // 1 Lakh Random YouTube IDs
-    const videoIds = [];
-    for (let i = 0; i < 100000; i++) {
-      let randomId = Math.random().toString(36).substring(2, 13);
-      videoIds.push(randomId);
-    }
+<!-- Fixed withdraw button -->
+<div class="withdraw-fixed">
+  <button id="openWithdrawPanel" style="padding:10px 12px;border-radius:8px;background:#111;color:var(--gold);border:1px solid rgba(255,215,0,0.08)">Withdraw</button>
+</div>
 
-    const container = document.getElementById('video-container');
-    videoIds.forEach(id => {
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${id}`;
-      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-      iframe.allowFullscreen = true;
+<main>
+  <section>
+    <div class="playerCard">
+      <iframe id="playerFrame" src="" allowfullscreen></iframe>
+      <div class="meta">
+        <div id="nowTitle" style="font-weight:800">Select a video to play</div>
+        <div class="small" id="nowExtra"></div>
+      </div>
+      <div class="adBlock">
+        <div id="inlineAdContainer" style="display:none"></div>
+      </div>
+    </div>
 
-      // Event - add earning after play (simulated)
-      iframe.addEventListener("load", () => {
-        balance += 0.50; // earning per video play
-        document.getElementById("balance").innerText = balance.toFixed(2);
+    <div id="videoGrid" class="grid" aria-live="polite"></div>
 
-        // Show Ad after play
-        showAd();
-      });
+    <button id="loadMoreBtn" class="loadMore">Load more videos</button>
+  </section>
 
-      container.appendChild(iframe);
-    });
+  <aside>
+    <div class="card">
+      <div style="font-weight:800">Wallet Details</div>
+      <div class="small" style="margin-top:8px">Today's, total and points shown here (client-side demo). To make payouts real, integrate server postbacks & payment gateway.</div>
 
-    function withdraw() {
-      alert("Your withdrawal is pending review ✅");
-    }
+      <div style="margin-top:12px">
+        <div class="small">Today</div><div id="todayDisplay" style="font-weight:800">₹0.00</div>
+        <div style="height:8px"></div>
+        <div class="small">Total Earned</div><div id="totalDisplay" style="font-weight:800">₹0.00</div>
+        <div style="height:8px"></div>
+        <div class="small">Points</div><div id="pointsDisplay" style="font-weight:800">0</div>
+      </div>
+      <div style="height:12px"></div>
+      <div><button id="claimBtn" style="width:100%;padding:10px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--gold),#ffb84d);font-weight:800">Open Offer & Earn</button></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <div style="font-weight:800">Withdraw (Client-side)</div>
+      <label class="small" style="margin-top:8px">Method</label>
+      <select id="payMethod"><option>UPI</option><option>PayPal</option><option>Bank</option></select>
+      <label class="small" style="margin-top:8px">Account / UPI ID</label>
+      <input id="payAccount" placeholder="example@upi or email" />
+      <label class="small" style="margin-top:8px">Amount (₹)</label>
+      <input id="payAmount" type="number" min="1" />
+      <div style="height:8px"></div>
+      <button id="btnRequestWithdraw" style="width:100%;padding:10px;border-radius:8px;border:none;background:#333;color:var(--gold);font-weight:800">Request Withdraw</button>
+
+      <div style="margin-top:12px"><div style="font-weight:700">Requests</div><div id="requestsList" class="small" style="margin-top:8px;max-height:200px;overflow:auto"></div></div>
+    </div>
+  </aside>
+</main>
+
+<!-- Inline modal ad container (hidden by default) -->
+<div id="adModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;right:0;bottom:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center">
+  <div style="background:#fff;padding:12px;border-radius:8px;max-width:360px;width:92%;text-align:center">
+    <div style="font-weight:800;margin-bottom:8px">Advertisement</div>
+    <div id="adIframeHolder"></div>
+    <div style="margin-top:8px"><button id="closeAd" style="padding:8px 12px;border-radius:8px;border:none;background:#111;color:var(--gold)">Close</button></div>
+  </div>
+</div>
+
+<script>
+/* ====== CONFIG ====== */
+const TOTAL = 100000;       // 1 lakh (rendered lazily)
+const BATCH = 80;          // batch size per load
+const POOL = [             // pool of YouTube IDs to cycle (give variety)
+  "dQw4w9WgXcQ","3JZ_D3ELwOQ","LXb3EKWsInQ","kJQP7kiw5Fk","fRh_vgS2dFE",
+  "9bZkp7q19f0","uelHwf8o7_U","JGwWNGJdvx8","OPf0YbXqDm0","60ItHLz5WEA",
+  "K4TOrB7at0Y","RgKAFK5djSk","60V4o1d2hE4","2Vv-BfVoq4g","CevxZvSJLk8",
+  "YQHsXMglC9A","YykjpeuMNEk","kXYiU_JCYtU","hT_nvWreIhg","aqz-KE-bpKQ",
+  "ScMzIvxBSi4","V-_O7nl0Ii0","sBws8MSXN7A","ysz5S6PUM-U","tgbNymZ7vqY",
+  "bC1wK5ThF1U","LsoLEjrDogU","M7FIvfx5J10","eVTXPUF4Oz4","VbfpW0pbvaU",
+  "fJ9rUzIMcZQ","hLQl3WQQoQ0","2vjPBrBU-TM","y6120QOlsfU","J7U1v1v3p1o",
+  "ZbZSe6N_BXs","C0DPdy98e4c","KIlgR1I1TmM","lWA2pjMjpBs","9bZkp7q19f0",
+  "3AtDnEC4zak","M3r2XDceM6A","60V4o1d2hE4","OPf0YbXqDm0","2Vv-BfVoq4g"
+];
+// AD_LINK: tumhara Adsterra / revenue link — agar change karna ho to yahan karo
+const AD_LINK = "https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc";
+
+/* ===== state ===== */
+let rendered = 0;
+let isAppending = false;
+const videoGrid = document.getElementById('videoGrid');
+const playerFrame = document.getElementById('playerFrame');
+const inlineAdContainer = document.getElementById('inlineAdContainer');
+const adModal = document.getElementById('adModal');
+const adIframeHolder = document.getElementById('adIframeHolder');
+const closeAd = document.getElementById('closeAd');
+
+const STORAGE_KEY = 'vip_wallet_v1';
+let wallet = { balance:0, total:0, today:0, points:0, requests:[], dailyCount:0, lastClaimAt:0 };
+
+/* ===== helpers ===== */
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(wallet)); }catch(e){} }
+function loadState(){ try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) wallet = JSON.parse(raw); }catch(e){} updateUI(); }
+function updateUI(){
+  document.getElementById('balanceDisplay').innerText = "₹"+(wallet.balance||0).toFixed(2);
+  document.getElementById('todayDisplay').innerText = "₹"+(wallet.today||0).toFixed(2);
+  document.getElementById('totalDisplay').innerText = "₹"+(wallet.total||0).toFixed(2);
+  document.getElementById('pointsDisplay').innerText = (wallet.points||0);
+  renderRequests();
+}
+function escapeHtml(s){ return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ===== card creation (lazy, safe) ===== */
+function createCard(index){
+  const id = index;
+  const vid = POOL[(index-1) % POOL.length];
+  const title = `VIP Video #${index}`;
+  const thumb = `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`;
+
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.dataset.title = title.toLowerCase();
+  el.innerHTML = `
+    <div class="thumbWrap">
+      <img class="thumb" src="${thumb}" alt="${escapeHtml(title)}">
+      <div class="playBtn">PLAY</div>
+    </div>
+    <div class="cbody">
+      <div class="ctitle">${escapeHtml(title)}</div>
+      <div class="small">ID: ${id}</div>
+    </div>
+  `;
+
+  el.querySelector('.thumbWrap').addEventListener('click', ()=>{
+    // 1) user-initiated ad open in new tab
+    try { window.open(AD_LINK, "_blank", "noopener"); } catch(e){ console.warn('popup blocked'); }
+    // 2) show modal inline ad (if the ad allows iframe)
+    try {
+      adIframeHolder.innerHTML = `<iframe src="${AD_LINK}" width="320" height="250" frameborder="0" scrolling="no"></iframe>`;
+      adModal.style.display = 'flex';
+    } catch(e){ console.warn('inline ad blocked'); }
+    // 3) credit locally (client-side)
+    setTimeout(()=> credit(0.5, 5), 800);
+    // 4) load video into main player
+    playerFrame.src = `https://www.youtube.com/embed/${vid}?rel=0&autoplay=1`;
+    document.getElementById('nowTitle').innerText = title;
+  });
+
+  return el;
+}
+
+/* ===== render next batch ===== */
+function renderNextBatch(n=BATCH){
+  if(rendered >= TOTAL) return;
+  const frag = document.createDocumentFragment();
+  const end = Math.min(rendered + n, TOTAL);
+  for(let i=rendered+1;i<=end;i++) frag.appendChild(createCard(i));
+  videoGrid.appendChild(frag);
+  rendered = end;
+}
+
+/* ===== scroll auto-load ===== */
+window.addEventListener('scroll', ()=> {
+  const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 900;
+  if(nearBottom && !isAppending && rendered < TOTAL){
+    isAppending = true;
+    setTimeout(()=> { renderNextBatch(BATCH); isAppending=false; }, 120);
+  }
+});
+
+/* ===== credit logic (client-side) ===== */
+const COOLDOWN = 3000; // 3s
+const DAILY_LIMIT = 500;
+function canCredit(){
+  const now = Date.now();
+  if(wallet.dailyCount >= DAILY_LIMIT) return {ok:false,msg:'Daily limit reached'};
+  if(now - (wallet.lastClaimAt||0) < COOLDOWN) return {ok:false,msg:'Please wait'};
+  return {ok:true};
+}
+function credit(amount, points){
+  const c = canCredit();
+  if(!c.ok){ console.warn(c.msg); return; }
+  wallet.balance = (wallet.balance||0) + amount;
+  wallet.total = (wallet.total||0) + amount;
+  wallet.today = (wallet.today||0) + amount;
+  wallet.points = (wallet.points||0) + points;
+  wallet.lastClaimAt = Date.now();
+  wallet.dailyCount = (wallet.dailyCount||0)+1;
+  saveState();
+  updateUI();
+}
+
+/* ===== claim button behavior ===== */
+document.getElementById('claimBtn').addEventListener('click', ()=>{
+  try { window.open(AD_LINK, "_blank", "noopener"); } catch(e){}
+  // show modal ad
+  adIframeHolder.innerHTML = `<iframe src="${AD_LINK}" width="320" height="250" frameborder="0" scrolling="no"></iframe>`;
+  adModal.style.display = 'flex';
+  setTimeout(()=> credit(0.5,5), 900);
+});
+
+/* ===== withdraw handling (client-side) ===== */
+document.getElementById('btnRequestWithdraw').addEventListener('click', ()=>{
+  const method = document.getElementById('payMethod').value;
+  const account = document.getElementById('payAccount').value.trim();
+  const amount = Number(document.getElementById('payAmount').value);
+  if(!account || !amount || amount <= 0){ alert('Enter valid details'); return; }
+  if(amount > (wallet.balance||0)){ alert('Insufficient balance'); return; }
+  wallet.balance = (wallet.balance||0) - amount;
+  wallet.requests.unshift({ method, account, amount: amount.toFixed(2), status:'Processing', at: Date.now() });
+  saveState();
+  updateUI();
+  alert('Withdraw request submitted (client-side).');
+});
+
+/* ===== render requests ===== */
+function renderRequests(){
+  const el = document.getElementById('requestsList');
+  if(!wallet.requests || wallet.requests.length===0){ el.innerHTML = "<div class='small'>No requests</div>"; return; }
+  el.innerHTML = wallet.requests.map(r=>`<div style="padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:8px">
+      <div><strong>${r.method}</strong> • ${r.account} • ₹${r.amount}</div>
+      <div class="small">Status: <strong>${r.status}</strong> • ${new Date(r.at).toLocaleString()}</div>
+    </div>`).join('');
+}
+
+/* ===== ad modal close ===== */
+closeAd.addEventListener('click', ()=> { adModal.style.display='none'; adIframeHolder.innerHTML=''; });
+
+/* ===== search/filter ===== */
+document.getElementById('searchInput').addEventListener('input', ()=>{
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  Array.from(videoGrid.children).forEach(card=>{
+    const t = (card.dataset.title||'');
+    card.style.display = t.includes(q) ? '' : 'none';
+  });
+});
+
+/* ===== refresh button ===== */
+document.getElementById('refreshBtn').addEventListener('click', ()=> location.reload());
+
+/* ===== init ===== */
+(function init(){
+  loadState();
+  renderNextBatch(160); // fast initial batch
+  updateUI();
+})();
+</script>
+</body>
+</html>
 
     function showAd() {
       let ad = document.getElementById("ad-container");
