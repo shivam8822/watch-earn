@@ -1,16 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>VIP 100k Videos + Wallet</title>
+<title>VIP 100k Videos + Wallet — Ads on Play</title>
 <style>
   :root{--bg:#000;--card:#0b0b0b;--gold:#ffd700;--muted:#9aa;}
   body{margin:0;font-family:Inter,Arial;background:var(--bg);color:var(--gold)}
-  header{position:sticky;top:0;background:#111;padding:12px 16px;z-index:40;box-shadow:0 2px 8px rgba(0,0,0,0.6)}
+  header{position:sticky;top:0;background:#111;padding:12px 16px;z-index:60;box-shadow:0 2px 8px rgba(0,0,0,0.6)}
   .brand{display:flex;gap:12px;align-items:center}
   .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--gold),#ffb84d);display:flex;align-items:center;justify-content:center;color:#000;font-weight:800}
   .title{font-size:18px;font-weight:800}
+  .disclaimer{margin-left:12px;padding:6px 10px;border-radius:8px;background:#ff4d4d;color:#fff;font-weight:700}
   .searchRow{margin-top:10px;display:flex;gap:8px;align-items:center}
   input[type="search"]{flex:1;padding:10px;border-radius:10px;border:2px solid rgba(255,215,0,0.12);background:#070707;color:var(--gold);outline:none}
   button{padding:10px 12px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--gold),#ffb84d);color:#000;font-weight:700;cursor:pointer}
@@ -47,8 +48,9 @@
       <div class="logo">VIP</div>
       <div>
         <div class="title">VIP 100k Videos</div>
-        <div class="small">Your premium video platform</div>
+        <div class="small">Premium video feed</div>
       </div>
+      <div class="disclaimer">NOTICE: Client-side wallet demo. Integrate server postbacks for real payouts.</div>
     </div>
 
     <div class="searchRow" style="margin-top:10px">
@@ -66,19 +68,20 @@
           <div class="small" id="nowExtra"></div>
         </div>
         <div class="adBlock">
+          <!-- Inline ad will be inserted here on video play -->
           <div id="inlineAdContainer" style="display:none;text-align:center;padding:8px;border-radius:8px"></div>
         </div>
       </div>
 
       <div id="videoGrid" class="grid" aria-live="polite"></div>
 
-      <button id="loadMoreBtn" class="loadMore">Load more videos</button>
+      <button id="loadMoreBtn" class="loadMore">Load more (auto loads while scrolling)</button>
     </section>
 
     <aside>
       <div class="card">
         <div style="font-weight:800">Wallet</div>
-        <div class="small">Your earnings from watching videos</div>
+        <div class="small">Earnings credited on ad-open (client-side demo)</div>
 
         <div style="margin-top:10px">
           <div class="walletRow"><div class="small">Today</div><div id="todayDisplay" class="big">₹0.00</div></div>
@@ -89,7 +92,7 @@
 
         <div style="margin-top:12px">
           <button id="claimBtn" style="width:100%;padding:10px;border-radius:8px;border:none;background:linear-gradient(90deg,var(--gold),#ffb84d);font-weight:800">Open Offer & Earn</button>
-          <div class="small" style="margin-top:6px">Complete offers to earn rewards</div>
+          <div class="small" style="margin-top:6px">Offer opens in new tab — credit applied locally (demo).</div>
         </div>
       </div>
 
@@ -112,8 +115,9 @@
       <div class="card small">
         <strong>How it works</strong>
         <ul>
-          <li>Watch videos and complete offers to earn rewards</li>
-          <li>Withdraw your earnings to your preferred payment method</li>
+          <li>Click a thumbnail → Ad opens (user action) and video loads in player.</li>
+          <li>Credits are applied locally for demo purposes only.</li>
+          <li>To enable real payouts you must integrate server-side postbacks + payment provider.</li>
         </ul>
       </div>
     </aside>
@@ -121,18 +125,25 @@
 
 <script>
 /* ========== CONFIG ========== */
-const TOTAL = 100000;           // number of demo entries
-const BATCH_RENDER = 60;        // how many cards to append per batch
-const POOL = [                  // pool of video IDs to cycle
-  "tgbNymZ7vqY","ScMzIvxBSi4","sBws8MSXN7A","ysz5S6PUM-U","aqz-KE-bpKQ",
-  "2Vv-BfVoq4g","eVTXPUF4Oz4","JGwWNGJdvx8","OPf0YbXqDm0","kJQP7kiw5Fk",
-  "dQw4w9WgXcQ","V-_O7nl0Ii0","hT_nvWreIhg","CevxZvSJLk8","kXYiU_JCYtU",
-  "YQHsXMglC9A","60ItHLz5WEA","fRh_vgS2dFE","bC1wK5ThF1U","LsoLEjrDogU"
+const TOTAL = 100000;           // 1 lakh entries
+const BATCH_RENDER = 80;        // cards per batch
+const POOL = [
+  "dQw4w9WgXcQ","3JZ_D3ELwOQ","LXb3EKWsInQ","kJQP7kiw5Fk","fRh_vgS2dFE",
+  "9bZkp7q19f0","uelHwf8o7_U","JGwWNGJdvx8","OPf0YbXqDm0","60ItHLz5WEA",
+  "K4TOrB7at0Y","RgKAFK5djSk","60V4o1d2hE4","2Vv-BfVoq4g","CevxZvSJLk8",
+  "YQHsXMglC9A","YykjpeuMNEk","uelHwf8o7_U","kXYiU_JCYtU","hT_nvWreIhg",
+  "aqz-KE-bpKQ","ScMzIvxBSi4","V-_O7nl0Ii0","dQw4w9WgXcQ","sBws8MSXN7A",
+  "ysz5S6PUM-U","tgbNymZ7vqY","bC1wK5ThF1U","KIlgR1I1TmM","lWA2pjMjpBs",
+  "y6120QOlsfU","2vjPBrBU-TM","6Ejga4kJUts","RgKAFK5djSk","J7U1v1v3p1o",
+  "hLQl3WQQoQ0","YykjpeuMNEk","60V4o1d2hE4","ZbZSe6N_BXs","LsoLEjrDogU",
+  "3AtDnEC4zak","fJ9rUzIMcZQ","kXYiU_JCYtU","dQw4w9WgXcQ","M7FIvfx5J10",
+  "RgKAFK5djSk","C0DPdy98e4c","eVTXPUF4Oz4","hT_nvWreIhg","VbfpW0pbvaU"
 ];
+// Replace with your Adsterra / revenue link
 const AD_LINK = "https://www.revenuecpmgate.com/c2fnhr5cn?key=7fd75f43460dfa449333f730863687bc";
 
 /* wallet + storage */
-const STORAGE_KEY = "vip_100k_wallet_v3";
+const STORAGE_KEY = "vip_100k_wallet_v4";
 let wallet = { balance:0, totalEarned:0, todayEarned:0, points:0, requests:[], dailyCount:0, lastClaimAt:0 };
 
 /* state */
@@ -159,13 +170,12 @@ function loadState(){ try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw
 function formatRs(x){ return "₹"+Number(x).toFixed(2); }
 function escapeHtml(s){ return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-/* build card */
+/* create single card (on-demand) */
 function createCard(index){
   const id = index;
   const vid = POOL[(index-1) % POOL.length];
   const title = `VIP Video #${index}`;
   const thumb = `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`;
-
   const el = document.createElement('div');
   el.className = 'card';
   el.dataset.index = id;
@@ -182,28 +192,27 @@ function createCard(index){
       </div>
     </div>
   `;
-  // click: open ad (new tab) THEN load video in main player & credit wallet
+  // click: open ad (user-initiated), show inline ad, credit locally, load main player
   el.querySelector('.thumbWrap').addEventListener('click', ()=>{
-    // open ad in new tab (user-initiated)
-    const w = window.open(AD_LINK, "_blank", "noopener");
-    // mark clicked for engagement
+    // 1) open ad in new tab (user action required by networks)
+    try { window.open(AD_LINK, "_blank", "noopener"); } catch(e){ console.warn("popup blocked", e); }
+    // 2) show inline ad iframe on the page for visibility
+    try {
+      inlineAdContainer.innerHTML = `<iframe src="${AD_LINK}" width="320" height="250" frameborder="0" scrolling="no"></iframe>`;
+      inlineAdContainer.style.display = 'block';
+    } catch(e){ console.warn("inline ad error", e); }
+    // 3) mark engagement and credit after slight delay
     entriesClicked.add(id);
-    // credit wallet after slight delay (simulate ad interaction)
-    setTimeout(()=> {
-      creditOnAdOpen();
-    }, 800);
-    // load video in main player
+    setTimeout(()=> creditOnAdOpen(), 700);
+    // 4) load video in main player
     playerFrame.src = `https://www.youtube.com/embed/${vid}?rel=0&autoplay=1`;
     nowTitle.innerText = title;
     mainPlayer = { id, vid, title };
-    // hide inline ad container
-    inlineAdContainer.style.display = 'none';
-    inlineAdContainer.innerHTML = '';
   });
   return el;
 }
 
-/* render batches */
+/* render batches (generate on the fly) */
 function renderNextBatch(batchSize = BATCH_RENDER){
   if(rendered >= TOTAL) return;
   const frag = document.createDocumentFragment();
@@ -216,7 +225,7 @@ function renderNextBatch(batchSize = BATCH_RENDER){
   document.getElementById('status') && (document.getElementById('status').innerText = `Rendered ${rendered}/${TOTAL}`);
 }
 
-/* infinite scroll */
+/* infinite scroll auto-load */
 function setupScrollLoad(){
   window.addEventListener('scroll', ()=>{
     const bottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 1000;
@@ -236,19 +245,17 @@ function updateWalletUI(){
   renderRequests();
 }
 
-/* credit logic on ad-open */
-const CREDIT_PER = 0.50; // rupees credited per ad open (client-side)
+/* credit logic on ad-open (client-side demo) */
+const CREDIT_PER = 0.50; // ₹0.50 per ad-open (client-side)
 const POINTS_PER = 5;
-const DAILY_LIMIT = 100;
+const DAILY_LIMIT = 200;
 const COOLDOWN_MS = 3000;
-
 function canCredit(){
   const now = Date.now();
   if(wallet.dailyCount >= DAILY_LIMIT) return {ok:false,msg:"Daily limit reached"};
   if(now - (wallet.lastClaimAt || 0) < COOLDOWN_MS) return {ok:false,msg:"Please wait a moment before next credit"};
   return {ok:true};
 }
-
 function creditOnAdOpen(){
   const c = canCredit();
   if(!c.ok){ console.warn(c.msg); return; }
@@ -262,25 +269,25 @@ function creditOnAdOpen(){
   updateWalletUI();
 }
 
-/* Claim button also opens ad and credits (user-initiated) */
+/* claim button opens ad + credit + show inline ad */
 claimBtn.addEventListener('click', ()=>{
-  const w = window.open(AD_LINK, "_blank", "noopener");
+  try { window.open(AD_LINK, "_blank", "noopener"); } catch(e){}
+  try { inlineAdContainer.innerHTML = `<iframe src="${AD_LINK}" width="320" height="250" frameborder="0" scrolling="no"></iframe>`; inlineAdContainer.style.display='block'; } catch(e){}
   setTimeout(()=> creditOnAdOpen(), 900);
 });
 
-/* withdraw request */
+/* withdraw request (client-side) */
 document.getElementById('btnRequestWithdraw').addEventListener('click', ()=>{
   const method = document.getElementById('payMethod').value;
   const account = document.getElementById('payAccount').value.trim();
   const amount = Number(document.getElementById('payAmount').value);
   if(!account || !amount || amount <= 0){ alert('Enter valid account and amount'); return; }
   if(amount > wallet.balance){ alert('Insufficient balance'); return; }
-  // deduct and create request
   wallet.balance -= amount;
   wallet.requests.unshift({ method, account, amount: amount.toFixed(2), status: "Processing", at: Date.now() });
   saveState();
   updateWalletUI();
-  alert('Withdraw request submitted successfully.');
+  alert('Withdraw request submitted. Status: Processing (client-side).');
 });
 
 /* render requests */
@@ -318,7 +325,7 @@ function initState(){
 /* init */
 (function init(){
   initState();
-  renderNextBatch(140); // initial
+  renderNextBatch(160); // initial quick render
   setupScrollLoad();
   updateWalletUI();
   document.getElementById('loadMoreBtn').addEventListener('click', ()=> renderNextBatch(BATCH_RENDER));
